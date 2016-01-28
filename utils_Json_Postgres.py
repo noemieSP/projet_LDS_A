@@ -9,7 +9,10 @@ from urllib.request import urlretrieve
 
 
 # Création et vérification de l'existance de la table
-# Paramètres: sql_table, table_name, database_name
+# Paramètres:   param_db : sortie de l'ouverture de la connexion
+#               param_sql_table: appel à la "create table" déclarée par l'utilisateur
+#               param_table_name: nom de la table déclarée par l'utilisateur
+#               param_database_name: nom de la database déclarée par l'utilisateur
 def create_table(param_db, param_sql_table, param_table_name, param_database_name):
     try:
         exe = param_db.execute(param_sql_table)
@@ -21,7 +24,8 @@ def create_table(param_db, param_sql_table, param_table_name, param_database_nam
 
 
 # Conversion Json en dictionnaire pour accéder facilement aux champs nommés
-# Paramètres: data_json
+# Paramètres:   data_json: data json déjà chargé
+# Sortie: data json transformé en dictionnaire
 def json_dict(data_json):
     if isinstance(data_json['values'][0], list):
         print('[load_json] Conversion list -> dict')
@@ -39,39 +43,45 @@ def json_dict(data_json):
 
 
 # Conversions dans les bons formats: en integers / float / date : pour tous les int / float / date à détecter à la main
-# Paramètres: data_dict
-def conv_format(data_dict):
+# Paramètres:   data_dict : data json ayant déjà été transformé en dictionnaire
+#               param_set_int : set déclaré, comprenant les champs integer du json
+#               param_set_float : set déclaré, comprenant les champs float du json
+#               param_set_date : set déclaré, comprenant les champs de type du json
+# Sortie: data_dict avec les bons formats
+def conv_format(data_dict, param_set_int, param_set_float, param_set_date):
     for i in range(data_dict.__len__()):
-        for key in {'lat', 'lng'}:
+        for key in param_set_float:
             data_dict[i][key] = float(data_dict[i][key])
-        for key in {'available_bike_stands', 'gid', 'nmarrond', 'availabilitycode',
-                    'bike_stands', 'available_bikes', 'number'}:
+        for key in param_set_int:
             try:
                 data_dict[i][key] = int(data_dict[i][key])
             except ValueError as val_err:
                 data_dict[i][key] = None
-        for key in {'last_update', 'last_update_fme'}:
+        for key in param_set_date:
             data_dict[i][key] = datetime.strptime(data_dict[i][key], "%Y-%m-%d %H:%M:%S")
     return data_dict
 
 
 # Chargement et modification du Json
-# Parmètres: file_path_json online
+# Parmètres:    file_path_json: url/chemin du json
+#               online: booleen, True si le json est en ligne / False s'il est en local
 # Sortie : data d
-def data_create(file_path_json, online):
+def data_create(file_path_json, online, param_set_int, param_set_float, param_set_date):
     if online:
         file_path_json, header = urlretrieve(file_path_json)
     json_data = open(file_path_json, mode='r')
     data = json.load(json_data)
     # Conversion en dictionnaire puis typage
     d = json_dict(data)
-    d = conv_format(d)
+    d = conv_format(d, param_set_int, param_set_float, param_set_date)
     print("Fichier chargé et modifié avec succès")
     return data, d
 
 
 # Construction de l'INSERT SQL
-# Paramètre param_table_name param_data
+# Paramètres:   param_table_name: table SQL déjà créée
+#               param_data: data json préalablement chargé
+# Sortie : statement nécessaire à chaque appel d'insertion dans la table
 def cons_insert(param_table_name, param_data):
     res = "INSERT INTO {} (".format(param_table_name)
     # parcours des champs déclarés dans fields
@@ -85,6 +95,10 @@ def cons_insert(param_table_name, param_data):
     return res
 
 
+# Insertion
+# Paramètres:   data_param: data chargée comprenant encore les fields
+#               d_param: json modifiée (mise en format)
+#               statement_param: statement construit par la fonction cons_insert
 def insertion(data_param, d_param, statement_param):
     c_ligne = 0
     for i in range(d_param.__len__()):
