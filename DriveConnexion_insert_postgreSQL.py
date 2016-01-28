@@ -1,4 +1,3 @@
-﻿#
 import io
 import os
 import httplib2
@@ -60,6 +59,11 @@ sql_table = "CREATE TABLE {} (" \
             "gid INTEGER NOT NULL," \
             "last_update TIMESTAMP WITHOUT TIME ZONE NOT NULL," \
             "last_update_fme TIMESTAMP WITHOUT TIME ZONE NOT NULL)".format(table_name)
+# déclaration de set pour la transformation avant insert
+set_int = {'available_bike_stands', 'gid', 'nmarrond', 'availabilitycode',
+                    'bike_stands', 'available_bikes', 'number'}
+set_float = {'lat', 'lng'}
+set_date = {'last_update', 'last_update_fme'}
 
 
 def get_credentials():
@@ -112,7 +116,7 @@ def dl_insert(param_results, param_s_f, param_outpath, param_format_f, param_IRI
                 if db.closed:
                     print("!!Connexion réouverte!!")
                     db = postgresql.open(param_IRI + param_database_name)
-                data, d = utils_Json_Postgres.data_create(outfilename, False)
+                data, d = utils_Json_Postgres.data_create(outfilename, False, set_int, set_float, set_date)
                 # Déclaration  et préparation de la requête d'insertion
                 sql_insert = utils_Json_Postgres.cons_insert(param_table_name, data)
                 statement = None
