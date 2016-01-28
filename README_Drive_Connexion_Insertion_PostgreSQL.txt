@@ -15,6 +15,6 @@
 			Création de la table velo'v
 			Chargement des fichiers du 26/01 seulement et svg(pour tester)
 			Insertion des fichiers dans la base
-		Fin lorsqu'au moins 1380 fichiers ont été trouvé (dû au nombre de fichier à lire sur le drive)
+			Fin lorsqu'au moins 1380 fichiers ont été trouvé (dû au nombre de fichier à lire sur le drive)
 	# utils_Json_Postgres.py : définition de fonctions utiles à la création / insertion / connexion à la base PostGreSQL 
 	# Détail dans le README_Json_Postgres
