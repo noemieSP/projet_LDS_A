@@ -1,4 +1,4 @@
-import postgresql
+﻿import postgresql
 import utils_Json_Postgres
 from postgresql import exceptions
 import time
@@ -64,10 +64,6 @@ def connect_postgres_insert(path, online_param):
     utils_Json_Postgres.insertion(data, d, statement)
 
 
-# EXEMPLE #
-# connect_postgres_insert('C:/Users/lata/PycharmProjects/LDSA_velov_JSON_to_SQL/all.json', False)
-# connect_postgres_insert('C:/Users/lata/PycharmProjects/LDSA_velov_JSON_to_SQL/ex.json', False)
-# connect_postgres_insert('https://download.data.grandlyon.com/ws/rdata/jcd_jcdecaux.jcdvelov/all.json', True)
 def main():
     start_time = time.time()
     i = 0
