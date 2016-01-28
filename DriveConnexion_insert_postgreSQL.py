@@ -1,3 +1,4 @@
+﻿#
 import io
 import os
 import httplib2
@@ -99,9 +100,7 @@ def dl_insert(param_results, param_s_f, param_outpath, param_format_f, param_IRI
             if file_name[0:10] == '26/01/2016':
                 nb_files += 1
                 print("*******Chargement et traitement du fichier******", file_name)
-                file_name = file_name.replace("/", "_")
-                file_name = file_name.replace(" ", "_")
-                file_name = file_name.replace(":", "_")
+                file_name = file_name.replace("/", "_").replace(" ", "_").replace(":", "_")
                 # chargement get_media
                 request = param_s_f.get_media(fileId=file_id)
                 outfilename = param_outpath+file_name+"."+param_format_f
