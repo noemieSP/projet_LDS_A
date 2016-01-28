@@ -1,8 +1,9 @@
-﻿import postgresql
+import postgresql
 import utils_Json_Postgres
 from postgresql import exceptions
 import time
 import glob
+import datetime
 
 ####################################
 ## Déclaration des var utiles
@@ -14,7 +15,7 @@ database_name = 'velov'
 # nom de la table
 table_name = 'velov'
 # chemin du repertoire dans lequel sont enregistrés les json
-repository = 'C:/Users/lata/PycharmProjects/LDSA_velov_JSON_to_SQL/drive/'
+folder = 'C:/Users/lata/PycharmProjects/LDSA_velov_JSON_to_SQL/drive/'
 # script sql création de la table velov
 sql_table = "CREATE TABLE {} (" \
             "id SERIAL PRIMARY KEY," \
@@ -39,46 +40,31 @@ sql_table = "CREATE TABLE {} (" \
             "last_update TIMESTAMP WITHOUT TIME ZONE NOT NULL," \
             "last_update_fme TIMESTAMP WITHOUT TIME ZONE NOT NULL)".format(table_name)
 
-
-#################################
-## Lancement du processus
-def connect_postgres_insert(path, online_param):
-    # Ouverture et connexion à la bd
-    db = postgresql.open(IRI + database_name)
-
-    # Création de la table 'velov'
-    utils_Json_Postgres.create_table(db, sql_table, table_name, database_name)
-    # Si la table existe déjà, il faut réouvrir la connexion
-    if db.closed:
-        db = postgresql.open(IRI + database_name)
-    data, d = utils_Json_Postgres.data_create(path, online_param)
-    # Déclaration  et préparation de la requête d'insertion
-    sql_insert = utils_Json_Postgres.cons_insert(table_name, data)
-    statement = None
-    try:
-        statement = db.prepare(sql_insert)
-    except exceptions.DuplicateTableError:
-        print("Une exception est soulevée!!! Erreur sur la requête d'insertion")
-
-    # construction de la liste de valeurs à insérer dans l'ordre annoncée des VALUES
-    utils_Json_Postgres.insertion(data, d, statement)
+# déclaration de set pour la transformation avant insert
+set_int = {'available_bike_stands', 'gid', 'nmarrond', 'availabilitycode',
+                    'bike_stands', 'available_bikes', 'number'}
+set_float = {'lat', 'lng'}
+set_date = {'last_update', 'last_update_fme'}
 
 
 def main():
     start_time = time.time()
     i = 0
-    f_test = glob.glob(repository+'*.json')
+    # récupération de tous les json du dossier folder
+    f_test = glob.glob(folder+'*.json')
     nb_f = f_test.__len__()
     db = postgresql.open(IRI + database_name)
     # Création de la table 'velov'
     utils_Json_Postgres.create_table(db, sql_table, table_name, database_name)
-    # Si la table existe déjà, il faut réouvrir la connexion
+    # Si la table existe déjà, la connexion est fermée automatiquement
     # construction de la liste de valeurs à insérer dans l'ordre annoncée des VALUES
     while i<nb_f:
         print("******* fichier %s" %i)
+        # si la connexion est fermée -> la réouvrir
         if db.closed:
             db = postgresql.open(IRI + database_name)
-        data, d = utils_Json_Postgres.data_create(f_test[i], False)
+        # chargement et modification du json pour préparation à l'insertion en bdd
+        data, d = utils_Json_Postgres.data_create(f_test[i], False, set_int, set_float, set_date)
         # Déclaration  et préparation de la requête d'insertion
         sql_insert = utils_Json_Postgres.cons_insert(table_name, data)
         statement = None
@@ -86,12 +72,13 @@ def main():
             statement = db.prepare(sql_insert)
         except exceptions.DuplicateTableError:
             print("Une exception est soulevée!!! Erreur sur la requête d'insertion")
+        # insertion des lignes
         utils_Json_Postgres.insertion(data, d, statement)
         i += 1
-    print("Tps execution--- %s seconds ---" % (time.time() - start_time))
+    tmp = time.time() - start_time
+    tmp = str(datetime.timedelta(seconds=tmp))
+    print(" Tps execution --- %s  ---" % tmp)
 
 if __name__ == '__main__':
     main()
-
-
 
