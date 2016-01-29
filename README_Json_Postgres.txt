@@ -14,3 +14,5 @@
 	# Json_Postgres.py : déclaration des paramètres nécessaires pour la connexion à la table, la récupération des fichiers et la mise au bon format
 		# main()
 
+# Tps exécution : 0:08:29.634408 min pour 1281 fichiers et 21 colonnes
+

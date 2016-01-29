@@ -5,11 +5,11 @@
 	# Créer un credentials sur l’ API manager google developer
 		# https://console.developers.google.com/apis/credentials?project=balmy-moonlight-119616&pli=1
 	# Vérification de tous les packages nécessaires à l'exécution du code 
-	# Récupération du fichier utils_Json_Postgres.py 
+	# Chargement de utils_Json_Postgres.py
 
 
 # Code python:
-	# DriveConnexion_insert_postgreSQL.py : code inspiré de https://developers.google.com/drive/v2/web/quickstart/python pour la connexion au google 		#drive et la récupération des fichiers  
+	# DriveConnexion_insert_postgreSQL : code inspiré de https://developers.google.com/drive/v2/web/quickstart/python pour la connexion au google 				#drive et la récupération des fichiers  
 	# MAIN:		Connexion à un google drive privée, lecture des fichiers page par page
 			Connexion à PostgreSQL
 			Création de la table velo'v
@@ -17,4 +17,6 @@
 			Insertion des fichiers dans la base
 			Fin lorsqu'au moins 1380 fichiers ont été trouvé (dû au nombre de fichier à lire sur le drive)
 	# utils_Json_Postgres.py : définition de fonctions utiles à la création / insertion / connexion à la base PostGreSQL 
-	# Détail dans le README_Json_Postgres
+-	# Détail dans le README_Json_Postgres
+
+# Tps d'exécution : 0:26:53.347988 min avec lecture de 2000 fichiers / chargement de 1380 json / insertion en bdd
