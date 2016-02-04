@@ -15,7 +15,7 @@ database_name = 'velov'
 # nom de la table
 table_name = 'velov'
 # chemin du repertoire dans lequel sont enregistrés les json
-folder = 'C:/Users/lata/PycharmProjects/LDSA_velov_JSON_to_SQL/drive/'
+folder = 'C:/mmonChemin/LDSA_velov_JSON_to_SQL/drive/'
 # script sql création de la table velov
 sql_table = "CREATE TABLE {} (" \
             "id SERIAL PRIMARY KEY," \

@@ -26,9 +26,9 @@ SCOPES = 'https://www.googleapis.com/auth/drive'
 CLIENT_SECRET_FILE = 'client_secret2.json'
 APPLICATION_NAME = 'Drive API Python Quickstart'
 # chemin de la branche principale pour la création du fichier credentials (droit d'accès au drive)
-home_dir = 'C:/Users/lata/PycharmProjects/LDSA_velov_JSON_to_SQL/'
+home_dir = 'C:/monChemin/LDSA_velov_JSON_to_SQL/'
 # chemin pour la création du fichier temporaire
-outpath = 'C:/Users/lata/PycharmProjects/LDSA_velov_JSON_to_SQL/drive/'
+outpath = 'C:/monChemin/LDSA_velov_JSON_to_SQL/drive/'
 format_f = 'json'
 # international resource identifier
 IRI = 'pq://admin:admin@localhost:5432/'
