@@ -67,13 +67,16 @@ set_date = {'last_update', 'last_update_fme'}
 
 
 def get_credentials():
+    #déclaration du chemin
     credential_dir = os.path.join(home_dir, '.credentials')
+    #vérification de l'existence du dossier, et création si besoin
     if not os.path.exists(credential_dir):
         os.makedirs(credential_dir)
     credential_path = os.path.join(credential_dir, 'drive-python-quickstart.json')
-
+    #ouverture
     store = oauth2client.file.Storage(credential_path)
     credentials = store.get()
+    #verification de la validité des credential
     if not credentials or credentials.invalid:
         flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES)
         flow.user_agent = APPLICATION_NAME
@@ -91,6 +94,7 @@ def dl_insert(param_results, param_s_f, param_outpath, param_format_f, param_IRI
     start_time = time.time()
     db = postgresql.open(param_IRI + param_database_name)
     nb_files = 0
+    #récupération des fichiers
     items = param_results.get('files', [])
     if not items:
         print('No files found.')
@@ -113,6 +117,7 @@ def dl_insert(param_results, param_s_f, param_outpath, param_format_f, param_IRI
                 done = False
                 while done is False:
                     status, done = downloader.next_chunk()
+                #vérification de l'ouverture de la connexion à la BDD
                 if db.closed:
                     print("!!Connexion réouverte!!")
                     db = postgresql.open(param_IRI + param_database_name)
